@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Visualization Dashboard</h2>
+<div class="row g-4">
+  <div class="col-md-6"><h6>Class distribution</h6><canvas id="cls"></canvas></div>
+  <div class="col-md-6"><h6>Confusion matrix of the selected model (test set)</h6><canvas id="cm"></canvas></div>
+  <div class="col-md-6"><h6>ROC curves (selected models)</h6><canvas id="roc"></canvas></div>
+  <div class="col-md-6"><h6>Predictions made in the application</h6><canvas id="cnt"></canvas></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const classes = {{ classes|tojson }}, cm = {{ cm|tojson }}, roc = {{ roc|tojson }}, counts = {{ counts|tojson }};
+const names = Object.keys(classes);
+new Chart(document.getElementById('cls'), {type:'bar', data:{labels:names, datasets:[{label:'Class 0', data:names.map(n=>classes[n]['0'])},{label:'Class 1', data:names.map(n=>classes[n]['1'])}]}});
+const cmLabels = ['True negative', 'False positive', 'False negative', 'True positive'];
+new Chart(document.getElementById('cm'), {type:'bar', data:{labels:Object.keys(cm), datasets:cmLabels.map((l,i)=>({label:l, data:Object.values(cm).map(v=>v[i])}))}});
+new Chart(document.getElementById('roc'), {type:'scatter', data:{datasets:Object.keys(roc).map(n=>({label:n, showLine:true, pointRadius:0, data:roc[n].map(p=>({x:p[0],y:p[1]}))}))}, options:{scales:{x:{min:0,max:1,title:{display:true,text:'False positive rate'}},y:{min:0,max:1,title:{display:true,text:'True positive rate'}}}}});
+new Chart(document.getElementById('cnt'), {type:'bar', data:{labels:Object.keys(counts), datasets:[{label:'Predictions', data:Object.values(counts)}]}});
+</script>{% endblock %}

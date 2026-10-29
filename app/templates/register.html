@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}Register{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6"><div class="card"><div class="card-body">
+<h3>Create account</h3>
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3"><label class="form-label">Username</label><input class="form-control" name="username" value="{{ username }}" required></div>
+  <div class="mb-3"><label class="form-label">Password (at least 8 characters)</label><input class="form-control" type="password" name="password" required></div>
+  <div class="mb-3"><label class="form-label">Confirm password</label><input class="form-control" type="password" name="confirm" required></div>
+  <div class="mb-3"><label class="form-label">Professional access code (optional)</label><input class="form-control" name="professional_code">
+    <div class="form-text">Leave blank to register as a General User. Healthcare Professionals receive a code from the administrator.</div></div>
+  <button class="btn btn-primary w-100">Register</button>
+</form>
+</div></div></div></div>
+{% endblock %}

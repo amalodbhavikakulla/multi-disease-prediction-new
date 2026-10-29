@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block title %}Model Comparison{% endblock %}
+{% block content %}
+<h2>Model Comparison</h2>
+<form class="mb-3" method="get"><select class="form-select w-auto d-inline" name="disease" onchange="this.form.submit()">
+{% for k, d in diseases.items() %}<option value="{{ k }}" {{ 'selected' if k == key }}>{{ d.title }}</option>{% endfor %}</select></form>
+<p>{{ entry.n_train }} training and {{ entry.n_test }} test records. Selected model (highest ROC-AUC): <strong>{{ entry.best }}</strong>.</p>
+<table class="table table-bordered table-sm"><thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>ROC-AUC</th><th>CV ROC-AUC</th></tr></thead><tbody>
+{% for r in rows %}<tr class="{{ 'table-success' if r.best }}"><td>{{ r.model }}</td><td>{{ '%.3f'|format(r.accuracy) }}</td><td>{{ '%.3f'|format(r.precision) }}</td><td>{{ '%.3f'|format(r.recall) }}</td><td>{{ '%.3f'|format(r.f1) }}</td><td>{{ '%.3f'|format(r.roc_auc) }}</td><td>{{ r.cv }}</td></tr>{% endfor %}
+</tbody></table>
+<canvas id="chart" height="110"></canvas>
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const rows = {{ rows|tojson }};
+new Chart(document.getElementById('chart'), {type:'bar', data:{labels:rows.map(r=>r.model), datasets:[
+ {label:'Accuracy', data:rows.map(r=>r.accuracy)}, {label:'F1-Score', data:rows.map(r=>r.f1)}, {label:'ROC-AUC', data:rows.map(r=>r.roc_auc)}]}, options:{scales:{y:{min:0,max:1}}}});
+</script>{% endblock %}

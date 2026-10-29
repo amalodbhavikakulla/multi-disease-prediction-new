@@ -1,0 +1,28 @@
+{% extends 'base.html' %}{% block title %}{{ cfg.title }} Prediction{% endblock %}
+{% block content %}
+<h2>{{ cfg.icon }} {{ cfg.title }} Prediction</h2>
+<p>Enter the patient's health information to assess preliminary {{ cfg.title|lower }} risk. Valid ranges are shown under each field.</p>
+{% if errors %}<div class="alert alert-danger">Please correct the highlighted fields.</div>{% endif %}
+<form method="post" novalidate><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="row">
+{% for f in cfg.features %}
+  <div class="col-md-6 mb-3">
+    <label class="form-label">{{ f.label }}{% if f.unit %} ({{ f.unit }}){% endif %}</label>
+    {% if f.kind == 'select' %}
+      <select class="form-select {{ 'is-invalid' if errors.get(f.name) }}" name="{{ f.name }}" required>
+        <option value="">Select...</option>
+        {% for v, text in f.options %}<option value="{{ v }}" {{ 'selected' if values.get(f.name)|string == v|string }}>{{ text }}</option>{% endfor %}
+      </select>
+    {% else %}
+      <input class="form-control {{ 'is-invalid' if errors.get(f.name) }}" type="number" step="{{ f.step }}" min="{{ f.hard[0] }}" max="{{ f.hard[1] }}"
+             name="{{ f.name }}" value="{{ values.get(f.name, '') }}" required>
+      <div class="form-text">Allowed: {{ f.hard[0] }} to {{ f.hard[1] }}</div>
+    {% endif %}
+    {% if errors.get(f.name) %}<div class="invalid-feedback d-block">{{ errors[f.name] }}</div>{% endif %}
+  </div>
+{% endfor %}
+</div>
+<button class="btn btn-primary">Predict {{ cfg.title }}</button>
+<a class="btn btn-link" href="{{ url_for('main.home') }}">← Back to Home</a>
+</form>
+{% endblock %}

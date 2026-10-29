@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}Reports{% endblock %}
+{% block content %}<h2>Reports</h2>
+<div class="list-group">
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.prediction_report') }}">Prediction report (CSV){% if not current_user.is_professional() %} – your own predictions{% endif %}</a>
+  {% if current_user.is_professional() %}
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.comparison_report') }}">Model comparison report (CSV)</a>
+  <a class="list-group-item list-group-item-action" href="{{ url_for('reports.importance_report') }}">Feature importance report (CSV)</a>
+  {% endif %}
+</div>{% endblock %}

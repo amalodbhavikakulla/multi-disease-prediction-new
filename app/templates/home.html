@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center mb-4">
+  <h1>AI-Powered Multi-Disease Prediction System</h1>
+  <p class="lead">Preliminary risk assessment for diabetes, heart disease and liver disease.</p>
+</div>
+<div class="row g-4">
+  {% for key, d in diseases.items() %}
+  <div class="col-md-4"><div class="card h-100 text-center"><div class="card-body">
+    <div class="display-5">{{ d.icon }}</div><h4 class="card-title">{{ d.title }}</h4><p>{{ d.blurb }}</p>
+    <a class="btn btn-primary" href="{{ url_for(key + '.predict') }}">Predict {{ d.title }}</a>
+  </div></div></div>
+  {% endfor %}
+</div>
+<div class="alert alert-warning mt-4"><strong>Important:</strong> this system is a screening aid. It does not diagnose disease. Always consult a qualified doctor.</div>
+{% endblock %}

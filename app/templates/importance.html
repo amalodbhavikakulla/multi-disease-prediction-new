@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block title %}Feature Importance{% endblock %}
+{% block content %}
+<h2>Feature Importance (Random Forest)</h2>
+<form class="mb-3" method="get"><select class="form-select w-auto d-inline" name="disease" onchange="this.form.submit()">
+{% for k, d in diseases.items() %}<option value="{{ k }}" {{ 'selected' if k == key }}>{{ d.title }}</option>{% endfor %}</select></form>
+<canvas id="chart" height="120"></canvas>
+<p class="small text-muted mt-3">Importance shows how much the model used a feature; it does not prove that the feature causes the disease.</p>
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const topFeatures = {{ top|tojson }};
+new Chart(document.getElementById('chart'), {type:'bar', data:{labels:topFeatures.map(t=>t[0]), datasets:[{label:'Importance', data:topFeatures.map(t=>t[1])}]}, options:{indexAxis:'y'}});
+</script>{% endblock %}

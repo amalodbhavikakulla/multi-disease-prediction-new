@@ -1,0 +1,16 @@
+{% extends 'base.html' %}{% block title %}Result{% endblock %}
+{% block content %}
+<h2>{{ cfg.icon }} {{ cfg.title }} – Prediction Result</h2>
+<div class="card mb-3"><div class="card-body">
+  <h3 class="{{ 'text-danger' if label == 'Positive' else 'text-success' }}">{{ label }}</h3>
+  <p class="mb-1">Probability of {{ cfg.title|lower }}: <strong>{{ '%.1f'|format(probability * 100) }}%</strong></p>
+  <div class="progress mb-3" style="height:22px"><div class="progress-bar {{ 'bg-danger' if label == 'Positive' else 'bg-success' }}" style="width: {{ probability * 100 }}%"></div></div>
+  <p><span class="badge bg-secondary">{{ band }} risk</span> {{ message }}</p>
+  <p class="small text-muted mb-0">Model used: {{ model_name }}</p>
+</div></div>
+{% if not saved %}<div class="alert alert-warning">Your result could not be saved to your prediction report. The result above is still valid.</div>{% endif %}
+{% for c in cautions %}<div class="alert alert-warning">{{ c }}</div>{% endfor %}
+<div class="alert alert-info">This is a preliminary estimate from a statistical model, not a medical diagnosis. Please consult a qualified doctor.</div>
+<a class="btn btn-primary" href="{{ url_for('reports.prediction_report') }}">Download my prediction report</a>
+<a class="btn btn-outline-primary" href="{{ url_for(key + '.predict') }}">New prediction</a>
+{% endblock %}

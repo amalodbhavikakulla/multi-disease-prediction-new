@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block title %}EDA{% endblock %}
+{% block content %}<h2>Exploratory Data Analysis</h2>
+<div class="list-group">{% for key, d in diseases.items() %}<a class="list-group-item list-group-item-action" href="{{ url_for('analytics.eda', key=key) }}">{{ d.icon }} {{ d.title }} dataset</a>{% endfor %}</div>
+{% endblock %}

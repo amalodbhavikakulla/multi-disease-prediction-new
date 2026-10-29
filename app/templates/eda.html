@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}EDA – {{ cfg.title }}{% endblock %}
+{% block content %}
+<h2>{{ cfg.icon }} {{ cfg.title }} – Exploratory Data Analysis</h2>
+<p>{{ data.n }} records. Class 0 = {{ data.counts.get('0', 0) }}, class 1 = {{ data.counts.get('1', 0) }}.</p>
+<div class="row"><div class="col-md-5"><canvas id="cls"></canvas></div><div class="col-md-7"><canvas id="cor"></canvas></div></div>
+<h5 class="mt-4">Feature summary</h5>
+<table class="table table-sm table-bordered"><thead><tr><th>Feature</th><th>Mean (class 0)</th><th>Mean (class 1)</th><th>Correlation with target</th></tr></thead>
+<tbody>{% for r in data.rows %}<tr><td>{{ r.feature }}</td><td>{{ r.mean0 }}</td><td>{{ r.mean1 }}</td><td>{{ r.corr }}</td></tr>{% endfor %}</tbody></table>
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const rows = {{ data.rows|tojson }};
+new Chart(document.getElementById('cls'), {type:'bar', data:{labels:['Class 0','Class 1'], datasets:[{label:'Records', data:[{{ data.counts.get('0', 0) }}, {{ data.counts.get('1', 0) }}]}]}});
+new Chart(document.getElementById('cor'), {type:'bar', data:{labels:rows.map(r=>r.feature), datasets:[{label:'Correlation with target', data:rows.map(r=>r.corr)}]}, options:{indexAxis:'y'}});
+</script>{% endblock %}
