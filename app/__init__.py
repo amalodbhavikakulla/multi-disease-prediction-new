@@ -22,6 +22,7 @@ def create_app(config_class=Config):
     Output: the configured Flask app (models loaded, blueprints registered)"""
     app = Flask(__name__)
     app.config.from_object(config_class)
+    os.makedirs(app.instance_path, exist_ok=True)
     if os.environ.get('APP_ENV') == 'production' and app.config['SECRET_KEY'] == 'dev-only-change-me':
         raise RuntimeError('SECRET_KEY must be set in the environment when APP_ENV=production')
     db.init_app(app)
