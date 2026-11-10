@@ -7,8 +7,7 @@ import click
 from flask import Flask, render_template, session
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
-from config import Config
+from flask_wtf.csrf import CSRFProtect, CSRFError
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -27,6 +26,10 @@ def create_app(config_class=Config):
         raise RuntimeError('SECRET_KEY must be set in the environment when APP_ENV=production')
     db.init_app(app)
     csrf.init_app(app)
+        @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        app.logger.error("CSRF validation failed: %s", e.description)
+        return render_template('error.html', code=400), 400
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to continue.'
