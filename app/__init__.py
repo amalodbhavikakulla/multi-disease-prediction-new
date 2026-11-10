@@ -26,10 +26,12 @@ def create_app(config_class=Config):
         raise RuntimeError('SECRET_KEY must be set in the environment when APP_ENV=production')
     db.init_app(app)
     csrf.init_app(app)
-        @app.errorhandler(CSRFError)
+
+    @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         app.logger.error("CSRF validation failed: %s", e.description)
         return render_template('error.html', code=400), 400
+
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to continue.'
