@@ -7,6 +7,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     # In production SECRET_KEY must be supplied through the environment (never committed to source control)
+    WTF_CSRF_SSL_STRICT = False
     """Settings used by the running application."""
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-only-change-me')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///' + os.path.join(BASE_DIR, 'instance', 'app.db'))
